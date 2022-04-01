@@ -1,4 +1,4 @@
-package com.team.veco.response.exception.handler;
+package com.team.veco.exception.handler;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RestControllerAdvice;

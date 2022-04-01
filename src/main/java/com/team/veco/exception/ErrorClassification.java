@@ -1,4 +1,4 @@
-package com.team.veco.response.exception;
+package com.team.veco.exception;
 
 import lombok.Getter;
 
