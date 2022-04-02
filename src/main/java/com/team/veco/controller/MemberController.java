@@ -2,6 +2,7 @@ package com.team.veco.controller;
 
 import com.team.veco.dto.request.LoginDto;
 import com.team.veco.dto.request.MemberRequestDto;
+import com.team.veco.dto.request.PasswordChangeDto;
 import com.team.veco.response.ResponseService;
 import com.team.veco.response.result.CommonResultResponse;
 import com.team.veco.response.result.SingleResultResponse;
@@ -38,6 +39,12 @@ public class MemberController {
     @DeleteMapping("/")
     public CommonResultResponse withdrawal(){
         memberService.withdrawal();
+        return responseService.getSuccessResult();
+    }
+
+    @PatchMapping("/password")
+    public CommonResultResponse updatePassword(@RequestBody PasswordChangeDto passwordChangeDto){
+        memberService.updatePassword(passwordChangeDto);
         return responseService.getSuccessResult();
     }
 }

@@ -4,6 +4,7 @@ import com.team.veco.configuration.security.jwt.JwtTokenProvider;
 import com.team.veco.domain.Member;
 import com.team.veco.dto.request.LoginDto;
 import com.team.veco.dto.request.MemberRequestDto;
+import com.team.veco.dto.request.PasswordChangeDto;
 import com.team.veco.enums.Role;
 import com.team.veco.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,14 +24,16 @@ public class MemberService {
     private final JwtTokenProvider tokenProvider;
 
     public Long join(MemberRequestDto memberDto){
+        if(memberRepository.findByEmail(memberDto.getEmail())!=null){
+            throw new RuntimeException();
+        }
         String password = passwordEncoder.encode(memberDto.getPassword());
         Member member = memberDto.toEntity(password);
         return memberRepository.save(member).getId();
     }
 
     public Map<String, String> login(LoginDto loginDto){
-        Member member = memberRepository.findByEmail(loginDto.getEmail())
-                .orElseThrow(()->new RuntimeException());
+        Member member = getMemberByEmail(loginDto.getEmail());
         if(!passwordEncoder.matches(loginDto.getPassword(), member.getPassword())){
             throw new RuntimeException();
         }
@@ -50,15 +53,26 @@ public class MemberService {
 
     public void logout(){
         String userEmail = getUserEmail();
-        Member member = memberRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new RuntimeException());
+        Member member = getMemberByEmail(userEmail);
         member.updateRefreshToken(null);
     }
 
     public void withdrawal(){
         String userEmail = getUserEmail();
-        memberRepository.findByEmail(userEmail)
-                .orElseThrow(()->new RuntimeException());
+        Member member = getMemberByEmail(userEmail);
+        memberRepository.delete(member);
+    }
+
+    public void updatePassword(PasswordChangeDto passwordChangeDto){
+        String email = getUserEmail();
+        Member member = getMemberByEmail(email);
+        String password = passwordEncoder.encode(passwordChangeDto.getPassword());
+        member.updatePassword(password);
+    }
+
+    private Member getMemberByEmail(String loginDto) {
+        return memberRepository.findByEmail(loginDto)
+                .orElseThrow(() -> new RuntimeException());
     }
 
     static public String getUserEmail() {

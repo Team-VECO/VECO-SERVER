@@ -35,6 +35,14 @@ public class Member implements UserDetails {
         this.refreshToken=refreshToken;
     }
 
+    public void updateName(String name){
+        this.name=name;
+    }
+
+    public void updatePassword(String password){
+        this.password=password;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
