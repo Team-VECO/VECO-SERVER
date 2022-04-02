@@ -31,6 +31,10 @@ public class Member implements UserDetails {
     @Column(name = "member_refreshToken")
     private String refreshToken;
 
+    public void updateRefreshToken(String refreshToken){
+        this.refreshToken=refreshToken;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;

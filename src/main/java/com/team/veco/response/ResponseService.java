@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class responseService {
+public class ResponseService {
     @AllArgsConstructor
     @Getter
     public enum CommonResponse{
