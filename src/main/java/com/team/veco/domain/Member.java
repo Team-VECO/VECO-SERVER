@@ -19,16 +19,16 @@ public class Member implements UserDetails {
     @Column(name = "member_id")
     private Long id;
 
-    @Column(name = "member_email", nullable = false, unique = true)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Column(name = "member_name", nullable = false)
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "member_password", nullable = false)
+    @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "member_refreshToken")
+    @Column(name = "refreshToken")
     private String refreshToken;
 
     public void updateRefreshToken(String refreshToken){
@@ -49,13 +49,8 @@ public class Member implements UserDetails {
     }
 
     @Override
-    public String getPassword() {
-        return null;
-    }
-
-    @Override
     public String getUsername() {
-        return null;
+        return this.email;
     }
 
     @Override

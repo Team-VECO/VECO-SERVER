@@ -24,7 +24,7 @@ public class MemberService {
     private final JwtTokenProvider tokenProvider;
 
     public Long join(MemberRequestDto memberDto){
-        if(memberRepository.findByEmail(memberDto.getEmail())!=null){
+        if(!memberRepository.findByEmail(memberDto.getEmail()).isEmpty()){
             throw new RuntimeException();
         }
         String password = passwordEncoder.encode(memberDto.getPassword());
@@ -70,19 +70,21 @@ public class MemberService {
         member.updatePassword(password);
     }
 
-    private Member getMemberByEmail(String loginDto) {
-        return memberRepository.findByEmail(loginDto)
+    private Member getMemberByEmail(String email) {
+        System.out.println("email = " + email);
+        return memberRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException());
     }
 
     static public String getUserEmail() {
-        String userEmail;
+        String email = null;
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if(principal instanceof UserDetails) {
-            userEmail = ((UserDetails) principal).getUsername();
-        } else {
-            userEmail = principal.toString();
+            email = ((Member) principal).getEmail();
+        } else{
+            email = principal.toString();
         }
-        return userEmail;
+        System.out.println("principal = " + principal);
+        return email;
     }
 }

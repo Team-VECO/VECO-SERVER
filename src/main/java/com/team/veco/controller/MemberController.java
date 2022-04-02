@@ -36,7 +36,7 @@ public class MemberController {
         return responseService.getSuccessResult();
     }
 
-    @DeleteMapping("/")
+    @DeleteMapping()
     public CommonResultResponse withdrawal(){
         memberService.withdrawal();
         return responseService.getSuccessResult();
