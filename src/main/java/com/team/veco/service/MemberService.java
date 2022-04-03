@@ -6,6 +6,10 @@ import com.team.veco.dto.request.LoginDto;
 import com.team.veco.dto.request.MemberRequestDto;
 import com.team.veco.dto.request.PasswordChangeDto;
 import com.team.veco.enums.Role;
+import com.team.veco.exception.ErrorCode;
+import com.team.veco.exception.exception.DuplicateMemberException;
+import com.team.veco.exception.exception.MemberNotFindException;
+import com.team.veco.exception.exception.PasswordNotCorrectException;
 import com.team.veco.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,7 +29,7 @@ public class MemberService {
 
     public Long join(MemberRequestDto memberDto){
         if(!memberRepository.findByEmail(memberDto.getEmail()).isEmpty()){
-            throw new RuntimeException();
+            throw new DuplicateMemberException("Member is duplicate", ErrorCode.DUPLICATE_MEMBER);
         }
         String password = passwordEncoder.encode(memberDto.getPassword());
         Member member = memberDto.toEntity(password);
@@ -35,7 +39,7 @@ public class MemberService {
     public Map<String, String> login(LoginDto loginDto){
         Member member = getMemberByEmail(loginDto.getEmail());
         if(!passwordEncoder.matches(loginDto.getPassword(), member.getPassword())){
-            throw new RuntimeException();
+            throw new PasswordNotCorrectException("Password isn't correct", ErrorCode.PASSWORD_NOT_CORRECT);
         }
         String accessToken = tokenProvider.createToken(member.getEmail(), Role.MEMBER);
         String refreshToken = tokenProvider.createRefreshToken();
@@ -71,9 +75,8 @@ public class MemberService {
     }
 
     private Member getMemberByEmail(String email) {
-        System.out.println("email = " + email);
         return memberRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new MemberNotFindException("Member can't find", ErrorCode.MEMBER_NOT_FIND));
     }
 
     static public String getUserEmail() {
@@ -84,7 +87,6 @@ public class MemberService {
         } else{
             email = principal.toString();
         }
-        System.out.println("principal = " + principal);
         return email;
     }
 }
