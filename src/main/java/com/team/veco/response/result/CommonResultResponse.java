@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class CommonResultResponse {
-    private Boolean success;
+    private boolean success;
     private int code;
     private String msg;
 }

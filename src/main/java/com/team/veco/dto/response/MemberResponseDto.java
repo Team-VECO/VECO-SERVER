@@ -1,12 +1,10 @@
 package com.team.veco.dto.response;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 
 @Builder
-@AllArgsConstructor @NoArgsConstructor
+@Getter
 public class MemberResponseDto {
     private String name;
-
 }

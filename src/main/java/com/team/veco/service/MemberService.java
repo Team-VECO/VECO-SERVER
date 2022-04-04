@@ -85,10 +85,10 @@ public class MemberService {
     public MemberResponseDto findOne(Long memberIdx){
         Member member = memberRepository.findById(memberIdx)
                 .orElseThrow(() -> new MemberNotFindException("Member can't find", ErrorCode.MEMBER_NOT_FIND));
+        System.out.println("member.getUsername() = " + member.getName());
         return MemberResponseDto.builder()
                 .name(member.getName())
                 .build();
-
     }
 
     private Member getMemberByEmail(String email) {

@@ -7,7 +7,7 @@ public class SingleResultResponse <T> extends CommonResultResponse {
     private T data;
 
     public SingleResultResponse(CommonResultResponse commonResult, T data) {
-        super(commonResult.getSuccess(), commonResult.getCode(), commonResult.getMsg());
+        super(commonResult.isSuccess(), commonResult.getCode(), commonResult.getMsg());
         this.data = data;
     }
 }

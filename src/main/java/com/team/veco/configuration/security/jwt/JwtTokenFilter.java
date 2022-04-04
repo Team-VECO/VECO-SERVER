@@ -24,34 +24,15 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtTokenFilter extends OncePerRequestFilter {
 
-    private final JwtTokenProvider tokenProvider;
-    private final MyUserDetailsService memberService;
-    @SneakyThrows
+    private final JwtTokenProvider jwtTokenProvider;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String accessToken=request.getHeader("Authorization");
-        String refreshToken=request.getHeader("RefreshToken");
-        if(accessToken!=null){
-            String userEmail=accessTokenExtractEmail(accessToken);
-            if(userEmail!=null) registerUserinfoInSecurityContext(userEmail, request);
+        String token = jwtTokenProvider.resolveToken(request);
+        if (token != null && jwtTokenProvider.validateToken(token)) {
+            Authentication authentication = jwtTokenProvider.getAuthentication(token);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
         }
         filterChain.doFilter(request, response);
-    }
-    private String accessTokenExtractEmail(String accessToken){
-        try{
-            return tokenProvider.getEmail(accessToken);
-        }catch(JwtException | IllegalArgumentException e){
-            throw new RuntimeException();
-        }
-    }
-    private void registerUserinfoInSecurityContext(String userEmail, HttpServletRequest req){
-        try{
-            UserDetails userDetails = memberService.loadUserByUsername(userEmail);
-            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-            usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(req));
-            SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-        }catch (NullPointerException e){
-            throw new RuntimeException();
-        }
     }
 }
