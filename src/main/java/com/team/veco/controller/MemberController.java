@@ -3,6 +3,7 @@ package com.team.veco.controller;
 import com.team.veco.dto.request.LoginDto;
 import com.team.veco.dto.request.MemberRequestDto;
 import com.team.veco.dto.request.PasswordChangeDto;
+import com.team.veco.dto.response.MemberResponseDto;
 import com.team.veco.response.ResponseService;
 import com.team.veco.response.result.CommonResultResponse;
 import com.team.veco.response.result.SingleResultResponse;
@@ -47,4 +48,10 @@ public class MemberController {
         memberService.updatePassword(passwordChangeDto);
         return responseService.getSuccessResult();
     }
+
+    @GetMapping("/{memberIdx}")
+    public SingleResultResponse<MemberResponseDto> findOne(@PathVariable Long memberIdx){
+        return responseService.getSingleResult(memberService.findOne(memberIdx));
+    }
+
 }

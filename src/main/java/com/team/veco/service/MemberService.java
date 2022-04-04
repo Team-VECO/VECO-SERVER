@@ -7,6 +7,7 @@ import com.team.veco.dto.request.EmailCertificateDto;
 import com.team.veco.dto.request.LoginDto;
 import com.team.veco.dto.request.MemberRequestDto;
 import com.team.veco.dto.request.PasswordChangeDto;
+import com.team.veco.dto.response.MemberResponseDto;
 import com.team.veco.enums.Role;
 import com.team.veco.exception.ErrorCode;
 import com.team.veco.exception.exception.DuplicateMemberException;
@@ -79,6 +80,15 @@ public class MemberService {
         Member member = getMemberByEmail(email);
         String password = passwordEncoder.encode(passwordChangeDto.getPassword());
         member.updatePassword(password);
+    }
+
+    public MemberResponseDto findOne(Long memberIdx){
+        Member member = memberRepository.findById(memberIdx)
+                .orElseThrow(() -> new MemberNotFindException("Member can't find", ErrorCode.MEMBER_NOT_FIND));
+        return MemberResponseDto.builder()
+                .name(member.getName())
+                .build();
+
     }
 
     private Member getMemberByEmail(String email) {
