@@ -85,7 +85,6 @@ public class MemberService {
     public MemberResponseDto findOne(Long memberIdx){
         Member member = memberRepository.findById(memberIdx)
                 .orElseThrow(() -> new MemberNotFindException("Member can't find", ErrorCode.MEMBER_NOT_FIND));
-        System.out.println("member.getUsername() = " + member.getName());
         return MemberResponseDto.builder()
                 .name(member.getName())
                 .build();
@@ -96,7 +95,7 @@ public class MemberService {
                 .orElseThrow(() -> new MemberNotFindException("Member can't find", ErrorCode.MEMBER_NOT_FIND));
     }
 
-    private String sendEmail(String email){
+    private String sendEmail(String email){//메일 전송 기능 추가해야됨
         String key=createKey();
 
         EmailCertificateDto emailCertificateDto = new EmailCertificateDto();

@@ -1,10 +1,12 @@
 package com.team.veco.dto.request;
 
 import com.team.veco.domain.Member;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
+@AllArgsConstructor
 public class MemberRequestDto {
     private String email;
     private String password;
