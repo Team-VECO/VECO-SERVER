@@ -82,6 +82,7 @@ public class MemberService {
         member.updatePassword(password);
     }
 
+    @Transactional(readOnly = true)
     public MemberResponseDto findOne(Long memberIdx){
         Member member = memberRepository.findById(memberIdx)
                 .orElseThrow(() -> new MemberNotFindException("Member can't find", ErrorCode.MEMBER_NOT_FIND));
