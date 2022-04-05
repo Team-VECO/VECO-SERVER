@@ -6,7 +6,7 @@ import com.team.veco.domain.Member;
 import com.team.veco.dto.request.EmailCertificateDto;
 import com.team.veco.dto.request.LoginDto;
 import com.team.veco.dto.request.MemberRequestDto;
-import com.team.veco.dto.request.PasswordChangeDto;
+import com.team.veco.dto.request.PasswordDto;
 import com.team.veco.dto.response.MemberResponseDto;
 import com.team.veco.enums.Role;
 import com.team.veco.exception.ErrorCode;
@@ -75,10 +75,10 @@ public class MemberService {
         memberRepository.delete(member);
     }
 
-    public void updatePassword(PasswordChangeDto passwordChangeDto){
+    public void updatePassword(PasswordDto passwordDto){
         String email = getUserEmail();
         Member member = getMemberByEmail(email);
-        String password = passwordEncoder.encode(passwordChangeDto.getPassword());
+        String password = passwordEncoder.encode(passwordDto.getPassword());
         member.updatePassword(password);
     }
 
@@ -88,6 +88,13 @@ public class MemberService {
         return MemberResponseDto.builder()
                 .name(member.getName())
                 .build();
+    }
+
+    public void certificatePassword(PasswordDto passwordDto){
+        Member member = getMemberByEmail(getUserEmail());
+        if(!passwordEncoder.matches(passwordDto.getPassword(), member.getPassword())){
+            throw new PasswordNotCorrectException("Password isn't correct", ErrorCode.PASSWORD_NOT_CORRECT);
+        }
     }
 
     private Member getMemberByEmail(String email) {

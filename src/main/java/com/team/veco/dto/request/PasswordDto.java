@@ -5,6 +5,6 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class PasswordChangeDto {
+public class PasswordDto {
     private String password;
 }

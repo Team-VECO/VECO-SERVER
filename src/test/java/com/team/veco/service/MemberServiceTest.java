@@ -4,9 +4,8 @@ import com.team.veco.configuration.security.jwt.JwtTokenProvider;
 import com.team.veco.domain.Member;
 import com.team.veco.dto.request.LoginDto;
 import com.team.veco.dto.request.MemberRequestDto;
-import com.team.veco.dto.request.PasswordChangeDto;
+import com.team.veco.dto.request.PasswordDto;
 import com.team.veco.dto.response.MemberResponseDto;
-import com.team.veco.enums.Role;
 import com.team.veco.exception.exception.DuplicateMemberException;
 import com.team.veco.repository.MemberRepository;
 import org.assertj.core.api.Assertions;
@@ -15,13 +14,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Map;
 
 
@@ -119,11 +116,22 @@ class MemberServiceTest {
         context.setAuthentication(token);
 
         //when
-        PasswordChangeDto passwordChangeDto = new PasswordChangeDto("12345");
+        PasswordDto passwordChangeDto = new PasswordDto("12345");
         memberService.updatePassword(passwordChangeDto);
 
         //then
         Member member = memberRepository.findByEmail(MemberService.getUserEmail()).orElseThrow();
         Assertions.assertThat(passwordEncoder.matches(passwordChangeDto.getPassword(),member.getPassword())).isTrue();
+    }
+
+    @Test
+    public void withdrawal(){
+        //given
+        MemberRequestDto memberRequestDto = new MemberRequestDto("test@gmail.com", "1234", "jojeayoung");
+        Long join = memberService.join(memberRequestDto);
+
+        //when
+
+        memberService.findOne(join);
     }
 }

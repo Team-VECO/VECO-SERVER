@@ -2,7 +2,7 @@ package com.team.veco.controller;
 
 import com.team.veco.dto.request.LoginDto;
 import com.team.veco.dto.request.MemberRequestDto;
-import com.team.veco.dto.request.PasswordChangeDto;
+import com.team.veco.dto.request.PasswordDto;
 import com.team.veco.dto.response.MemberResponseDto;
 import com.team.veco.response.ResponseService;
 import com.team.veco.response.result.CommonResultResponse;
@@ -44,8 +44,8 @@ public class MemberController {
     }
 
     @PatchMapping("/password")
-    public CommonResultResponse updatePassword(@RequestBody PasswordChangeDto passwordChangeDto){
-        memberService.updatePassword(passwordChangeDto);
+    public CommonResultResponse updatePassword(@RequestBody PasswordDto passwordDto){
+        memberService.updatePassword(passwordDto);
         return responseService.getSuccessResult();
     }
 
@@ -54,4 +54,9 @@ public class MemberController {
         return responseService.getSingleResult(memberService.findOne(memberIdx));
     }
 
+    @PostMapping("/password/certificate")
+    public CommonResultResponse certificatePassword(@RequestBody PasswordDto passwordDto){
+        memberService.certificatePassword(passwordDto);
+        return responseService.getSuccessResult();
+    }
 }
