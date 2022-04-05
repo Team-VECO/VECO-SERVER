@@ -7,6 +7,7 @@ import com.team.veco.dto.request.MemberRequestDto;
 import com.team.veco.dto.request.PasswordDto;
 import com.team.veco.dto.response.MemberResponseDto;
 import com.team.veco.exception.exception.DuplicateMemberException;
+import com.team.veco.exception.exception.MemberNotFindException;
 import com.team.veco.repository.MemberRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
@@ -88,14 +89,7 @@ class MemberServiceTest {
         MemberRequestDto memberRequestDto = new MemberRequestDto("test@gmail.com", "1234", "jojeayoung");
         memberService.join(memberRequestDto);
         LoginDto loginDto = new LoginDto("test@gmail.com", "1234");
-        memberService.login(loginDto);
-
-        //when
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-                memberRequestDto.getEmail(),
-                memberRequestDto.getPassword());
-        SecurityContext context = SecurityContextHolder.getContext();
-        context.setAuthentication(token);
+        login(loginDto, memberRequestDto);
         memberService.logout();
 
         //then
@@ -108,12 +102,7 @@ class MemberServiceTest {
         MemberRequestDto memberRequestDto = new MemberRequestDto("test@gmail.com", "1234", "jojeayoung");
         memberService.join(memberRequestDto);
         LoginDto loginDto = new LoginDto("test@gmail.com", "1234");
-        memberService.login(loginDto);
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-                memberRequestDto.getEmail(),
-                memberRequestDto.getPassword());
-        SecurityContext context = SecurityContextHolder.getContext();
-        context.setAuthentication(token);
+        login(loginDto, memberRequestDto);
 
         //when
         PasswordDto passwordChangeDto = new PasswordDto("12345");
@@ -129,9 +118,22 @@ class MemberServiceTest {
         //given
         MemberRequestDto memberRequestDto = new MemberRequestDto("test@gmail.com", "1234", "jojeayoung");
         Long join = memberService.join(memberRequestDto);
+        LoginDto loginDto = new LoginDto("test@gmail.com", "1234");
+        login(loginDto, memberRequestDto);
 
         //when
+        memberService.withdrawal();
 
-        memberService.findOne(join);
+        //then
+        org.junit.jupiter.api.Assertions.assertThrows(MemberNotFindException.class, () -> memberService.findOne(join));
+    }
+
+    private void login(LoginDto loginDto, MemberRequestDto memberRequestDto) {
+        memberService.login(loginDto);
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
+                memberRequestDto.getEmail(),
+                memberRequestDto.getPassword());
+        SecurityContext context = SecurityContextHolder.getContext();
+        context.setAuthentication(token);
     }
 }
