@@ -8,6 +8,7 @@ import com.team.veco.dto.request.PasswordDto;
 import com.team.veco.dto.response.MemberResponseDto;
 import com.team.veco.exception.exception.DuplicateMemberException;
 import com.team.veco.exception.exception.MemberNotFindException;
+import com.team.veco.exception.exception.PasswordNotCorrectException;
 import com.team.veco.repository.MemberRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
@@ -126,6 +127,22 @@ class MemberServiceTest {
 
         //then
         org.junit.jupiter.api.Assertions.assertThrows(MemberNotFindException.class, () -> memberService.findOne(join));
+    }
+
+    @Test
+    public void passwordCertificate(){
+        //given
+        MemberRequestDto memberRequestDto = new MemberRequestDto("test@gmail.com", "1234", "jojeayoung");
+        Long join = memberService.join(memberRequestDto);
+        LoginDto loginDto = new LoginDto("test@gmail.com", "1234");
+        login(loginDto, memberRequestDto);
+
+        //when
+        PasswordDto passwordDto = new PasswordDto("12345");
+
+        //then
+        org.junit.jupiter.api.Assertions.assertThrows(PasswordNotCorrectException.class, ()->memberService.certificatePassword(passwordDto));
+
     }
 
     private void login(LoginDto loginDto, MemberRequestDto memberRequestDto) {
